@@ -183,44 +183,9 @@ private fun RefreshButton(counter: Int, modifier: Modifier = Modifier, onClick: 
     }
 }
 
-private const val SOURCE_ID = "source"
-private const val LAYER_ID = "layer"
-private const val CENTRE_LAT = 39.749
-private const val CENTRE_LONG = -105.005
-private const val CENTRE_ZOOM = 10.0
-private const val TOTAL_POINTS = 10000
-private const val INCREMENT = 0.0001
-
 private fun mapOpts(ctx: Context) = MapLibreMapOptions
     .createFromAttributes(ctx)
     .compassEnabled(false)
-
-private fun configure(map: MapLibreMap, style: Style) {
-    val source = style.getSource(SOURCE_ID) ?: GeoJsonSource(SOURCE_ID).apply {
-        setGeoJson(
-            LineString.fromLngLats(List(TOTAL_POINTS) {
-                Point.fromLngLat(CENTRE_LONG + it * INCREMENT, CENTRE_LAT + it * INCREMENT)
-            })
-        )
-
-        style.addSource(this)
-    }
-
-    style.getLayer(LAYER_ID) ?: LineLayer(LAYER_ID, source.id).apply {
-        setProperties(
-            lineCap(Property.LINE_CAP_ROUND),
-            lineJoin(Property.LINE_JOIN_ROUND),
-            visibility(Property.VISIBLE),
-            lineWidth(3f),
-            lineColor("#FF0000"),
-            lineDasharray(arrayOf(1f, 1.50f))
-        )
-
-        style.addLayer(this)
-    }
-
-    map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(CENTRE_LAT, CENTRE_LONG), CENTRE_ZOOM))
-}
 
 private fun Duration.formatted() = if (inWholeHours > 0) {
     "%02d:%02d:%02d".format(
